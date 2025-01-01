@@ -5,6 +5,7 @@ import { Drawer, Table, Tooltip } from 'antd';
 import { ColumnType } from 'antd/es/table';
 import { Input } from 'antd';
 import ReactJson from 'react-json-view';
+import * as events from 'node:events';
 
 const columns: ColumnType<Request>[] = [
   {
@@ -132,6 +133,19 @@ const parseData = (req: Request) => {
   if (!postData?.text || !postData?.mimeType) {
   } else if (postData.mimeType.includes('application/json')) {
     requestData = JSON.parse(postData.text);
+    if (Array.isArray(requestData)) {
+      requestData.forEach((item) => {
+        if (Array.isArray(item.events)) {
+          item.events.forEach((it: any) => {
+            if (it.params) {
+              try {
+                it.params = JSON.parse(it.params);
+              } catch (e) {}
+            }
+          });
+        }
+      });
+    }
   } else {
     responseData = postData.text;
   }
