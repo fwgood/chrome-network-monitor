@@ -27,7 +27,40 @@ const columns: ColumnType<Request>[] = [
     },
     width: 120,
   },
-
+  {
+    title: 'requestBody',
+    render: (value, record, index) => {
+      const { postData } = record.request;
+      if (!postData || !postData.text) {
+        return '-';
+      }
+      const { mimeType, text } = postData;
+      const data =
+        mimeType === 'application/json'
+          ? JSON.stringify(JSON.parse(text), null, 2)
+          : text;
+      return record.request.method === 'POST' ? (
+        <span className="ellipsis-item">
+          <Tooltip
+            placement={'top'}
+            title={
+              <pre
+                style={{
+                  maxHeight: 300,
+                  overflow: 'auto',
+                }}
+              >
+                {data}
+              </pre>
+            }
+          >
+            {data}
+          </Tooltip>
+        </span>
+      ) : null;
+    },
+    width: 240,
+  },
   {
     title: 'query',
     render: (value, record, index) => {
