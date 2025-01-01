@@ -120,6 +120,7 @@ const columns: ColumnType<Request>[] = [
         </span>
       ) : null;
     },
+    width: 240,
   },
 ];
 
@@ -129,14 +130,14 @@ const parseData = (req: Request) => {
   const { postData } = req.request;
   const { content } = req.response;
   if (!postData?.text || !postData?.mimeType) {
-  } else if (postData.mimeType === 'application/json') {
+  } else if (postData.mimeType.includes('application/json')) {
     requestData = JSON.parse(postData.text);
   } else {
     responseData = postData.text;
   }
 
   if (!content?.text || !content?.mimeType) {
-  } else if (content.mimeType === 'application/json') {
+  } else if (content.mimeType.includes('application/json')) {
     responseData = JSON.parse(content.text);
   } else {
     responseData = content.text;
